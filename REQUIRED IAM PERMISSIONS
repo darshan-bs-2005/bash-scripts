@@ -1,0 +1,8 @@
+{
+  "Effect": "Allow",
+  "Action": [
+    "ec2:DescribeInstances",
+    "config:PutEvaluations"
+  ],
+  "Resource": "*"
+}
