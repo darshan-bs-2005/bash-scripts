@@ -111,37 +111,63 @@ def lambda_handler(event, context):
 
  return "Evaluation completed"
 
-tep 4: Create Custom AWS Config Rule
+## Step 4: Create Custom AWS Config Rule (Lambda)
 
-Go to AWS Config → Rules
+1. Go to **AWS Config → Rules**
+2. Click **Add rule**
+3. Select **Custom rule**
+4. Choose **AWS Lambda function**
+5. Paste the **Lambda Function ARN**
+6. Scope:
+   - Resource type: `AWS::EC2::Instance`
+7. Click **Save**
 
-Click Add rule
+---
 
-Select Custom rule
+## Step 5: Do NOT Test the Lambda
 
-Choose Lambda function
+- Do **not** click the **Test** button in Lambda
+- AWS Config will trigger the Lambda **automatically**
+- Manual testing will cause errors because `invokingEvent` is sent only by AWS Config
 
-Paste the Lambda Function ARN
+---
 
-Resource type:
+## Step 6: Automatic Evaluation by AWS Config
 
-AWS::EC2::Instance
+- AWS Config automatically detects EC2 configuration changes
+- Lambda is triggered in the background
+- Wait **1–5 minutes**
+- Refresh the rule page in AWS Config
 
-Click Save
+---
 
-Step 5: Automatic Evaluation
+## Step 7: Check Compliance Result
 
-AWS Config will automatically trigger the Lambda
+- EC2 instance with **detailed monitoring enabled**  
+  → **COMPLIANT**
 
-Wait 1–5 minutes
+- EC2 instance with **detailed monitoring disabled**  
+  → **NON_COMPLIANT**
 
-Refresh the rule
+Click the resource ID to view:
+- Compliance status
+- Annotation message
+- Evaluation time
 
-Step 6: Compliance Result
+---
 
-Monitoring enabled → COMPLIANT
+## Expected Output
 
-Monitoring disabled → NON_COMPLIANT
+| EC2 Monitoring | Compliance Status |
+|---------------|------------------|
+Enabled | COMPLIANT |
+Disabled | NON_COMPLIANT |
 
-No manual testing is required.
+---
 
+## Conclusion
+
+- AWS Config triggers the Lambda automatically
+- Lambda uses boto3 to check EC2 detailed monitoring
+- Compliance results are reported using `put_evaluations`
+- No manual testing is required
